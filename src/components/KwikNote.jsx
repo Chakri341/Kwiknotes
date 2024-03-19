@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const KwikNote = ({ id, text, onUpdate, onDelete }) => {
   const [isEditing, setEditing] = useState(false);
-  const [newText, setNewText] = useState("Enter the Quick Note");
+  const [newText, setNewText] = useState(text);
 
   const handleEdit = () => {
     setNewText("");
@@ -31,7 +31,7 @@ const KwikNote = ({ id, text, onUpdate, onDelete }) => {
               ></textarea>{" "}
               <br />
               <div className="card-actions justify-end">
-                <button className="btn" onClick={handleSave}>
+                <button className="btn cursor-pointer" onClick={handleSave}>
                   Save
                 </button>
               </div>
@@ -47,7 +47,7 @@ const KwikNote = ({ id, text, onUpdate, onDelete }) => {
                 <div className="flex justify-end gap-2">
                   <button
                     onClick={handleEdit}
-                    className="text-white text-sm bg-gray-700 hover:bg-gray-800 p-1 dark:bg-gray-600 dark:hover:bg-gray-700 rounded-lg"
+                    className="text-white cursor-pointer text-sm bg-gray-700 hover:bg-gray-800 p-1 dark:bg-gray-600 dark:hover:bg-gray-700 rounded-lg"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -66,7 +66,7 @@ const KwikNote = ({ id, text, onUpdate, onDelete }) => {
                   </button>
                   <button
                     onClick={onDelete}
-                    className="text-white text-sm bg-rose-700 hover:bg-rose-800 p-1 dark:bg-rose-600 dark:hover:bg-rose-700 rounded-lg"
+                    className="text-white cursor-pointer text-sm bg-rose-700 hover:bg-rose-800 p-1 dark:bg-rose-600 dark:hover:bg-rose-700 rounded-lg"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

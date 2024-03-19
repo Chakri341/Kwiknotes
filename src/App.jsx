@@ -1,27 +1,74 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import KwikNote from "./components/KwikNote";
+import supabase from "./utils/supabase";
 
 function App() {
   const [notes, setNotes] = useState([]);
-  const addNote = () => {
-    setNotes([
-      ...notes,
-      { id: Date.now(), text: "Click Edit to write your note..." },
-    ]);
+
+  useEffect(() => {
+    fetchNote();
+  }, []);
+
+  const fetchNote = async () => {
+    try {
+      let { data, error } = await supabase.from("notes").select("*");
+      if (error) throw error;
+      setNotes(data);
+    } catch (error) {
+      console.log("Error in the fetching data", error);
+    }
   };
-  const updateNote = (id, newText) => {
-    setNotes((preNote) =>
-      preNote.map((note) => note.id === id ? { ...note, text:newText } : note
-      )
-    );
-    console.log(notes);
+
+  const addNote = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("notes")
+        .insert([{ id: Date.now(), text: "Click Edit to write your note..." }])
+        .select();
+
+        if (error) throw error;
+
+        setNotes([...notes, ...data]);
+    } catch (error) {
+      console.log("Error in addNote", error);
+    }
   };
-  const deleteNote = (id) => {
-    setNotes(notes.filter((note) => note.id !== id));
+
+  const updateNote = async (id, newText) => {
+    try {
+      const { data, error } = await supabase
+        .from("notes")
+        .update({ text: newText })
+        .eq("id", id)
+        .select();
+
+        if (error) throw error;
+
+        setNotes((preNote) => preNote.map((note) => (note.id === id ? { ...note, text: newText } : note)))
+
+    } catch (error) {
+      console.log("Error in UpdateNote", error);
+    }
+
+    setNotes([...data]);
   };
+
+
+  const deleteNote = async (id) => {
+    try {
+      const { error } = await supabase.from("notes").delete().eq("id", id);
+      
+      if (error) throw error;
+
+      setNotes(notes.filter((note) => note.id !== id))
+    } catch (error) {
+      console.log("Error in deleteNote", error);
+    }
+  };
+
   return (
     <>
-      <h1 className="m-3 ml-5 text-white font-bold text-5xl italic text-center p-3">
+      <h1 className="m-3 text-white font-bold text-5xl italic text-center p-5">
         Kwik Note
       </h1>
       <div className="text-center m-2">
@@ -32,7 +79,7 @@ function App() {
           ADD NOTE
         </button>
       </div>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap m-3 p-3">
         {notes.map((note) => (
           <KwikNote
             key={note.id}
